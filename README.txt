@@ -1,0 +1,1 @@
+This project aims to build a vocabulary trainer similar to vokabel.org
