@@ -1,0 +1,15 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+
+    <p>Abfragen zu Vokabelliste {{liste}}</p>
+
+    <ul>
+        {% for vokabel in abfragen %}
+            <li>
+                {{vokabel}}
+            </li>
+        {% empty %}
+            <li>Noch keine Vokabeln</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

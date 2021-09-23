@@ -1,0 +1,17 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+
+    <p>{{liste}}</p>
+
+    <p>
+        <a href="{% url 'vokabel_trainer:abfragen' liste.id %}">Neue Abfrage</a>
+    </p>
+
+    <ul>
+        {% for vokabel in vokabeln %}
+            <li>{{vokabel}}</li>
+        {% empty %}
+            <li>Noch keine Vokabeln</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}

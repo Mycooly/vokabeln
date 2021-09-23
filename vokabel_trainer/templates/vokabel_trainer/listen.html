@@ -1,0 +1,15 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+
+    <p>Listen</p>
+
+    <ul>
+        {% for liste in listen %}
+            <li>
+                <a href="{% url 'vokabel_trainer:liste' liste.id%}">{{liste}}</a>
+            </li>
+        {% empty %}
+            <li>Noch keine Listen</li>
+        {% endfor %}
+    </ul>
+{% endblock content %}
