@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from random import sample
+from datetime import datetime
 
 from .models import Liste, Abfrage
-from .forms import ListeForm,VokabelForm
+from .forms import ListeForm, VokabelForm, AbfrageForm
 
 # Create your views here.
 
@@ -19,10 +21,11 @@ def listen(request):
 
 def liste(request, liste_id):
     """Vokabelliste"""
+    form=AbfrageForm()
     liste=Liste.objects.get(id=liste_id)
     vokabeln=liste.vokabel_set.order_by('-date_added')
     abfragen=liste.abfrage_set.all()
-    context={'liste':liste, 'vokabeln':vokabeln, 'abfragen':abfragen}
+    context={'liste':liste, 'vokabeln':vokabeln, 'abfragen':abfragen,'form':form}
     return render(request, 'vokabel_trainer/liste.html', context)
 
 def neue_liste(request):
@@ -65,3 +68,16 @@ def abfrage(request,abfrage_id):
 
     context={'abfrage':abfrage,'liste':liste,'vokabeln':vokabeln}
     return render(request,'vokabel_trainer/abfrage.html', context)
+
+def neue_abfrage(request,liste_id):
+    """Erstellt neue Abfrage"""
+    liste=Liste.objects.get(id=liste_id)
+    vokabeln=list(liste.vokabel_set.all())
+    vokabeln=sample(vokabeln, min(5, len(vokabeln)))
+
+    neue_abfrage=Abfrage.objects.create(
+        liste=liste,
+        date_added=datetime.now()
+    )
+    neue_abfrage.vokabeln.set(vokabeln)
+    return HttpResponseRedirect(reverse('vokabel_trainer:abfrage',args=[neue_abfrage.id]))

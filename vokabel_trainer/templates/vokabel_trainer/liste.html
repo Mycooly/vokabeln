@@ -5,6 +5,16 @@
 
     <p>Abfragen</p>
 
+    {% if vokabeln %}
+    <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button name="submit">Neue Abfrage</button>
+    </form>
+    {% else %}
+    <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
+    {% endif %}
+
     <ul>
         {% for abfrage in abfragen %}
             <li><a href="{% url 'vokabel_trainer:abfrage' abfrage.id %}">{{abfrage}}</a></li>
