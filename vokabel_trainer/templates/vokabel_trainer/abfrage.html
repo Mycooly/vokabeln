@@ -9,4 +9,6 @@
             <li>Noch keine Vokabeln</li>
         {% endfor %}
     </ul>
+
+    <p><a href="{% url 'vokabel_trainer:aktive_abfrage' abfrage_id=abfrage.id abfrage_nummer=0 %}">Abfrage starten</a> </p>
 {% endblock content %}

@@ -13,7 +13,6 @@ urlpatterns=[
     url(r'^neue_vokabel/(?P<liste_id>\d+)/$', views.neue_vokabel, name='neue_vokabel'),
 
     url(r'^abfrage/(?P<abfrage_id>\d+)/', views.abfrage, name='abfrage'),
-    url(r'^neue_abfrage/(?P<liste_id>\d+)/', views.neue_abfrage, name='neue_abfrage')
-
-
+    url(r'^neue_abfrage/(?P<liste_id>\d+)/', views.neue_abfrage, name='neue_abfrage'),
+    url(r'^aktive_abfrage/(?P<abfrage_id>\d+)/(?P<abfrage_nummer>\d+)/', views.aktive_abfrage, name='aktive_abfrage'),
 ]

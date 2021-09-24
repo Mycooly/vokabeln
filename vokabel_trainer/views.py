@@ -5,7 +5,7 @@ from random import sample
 from datetime import datetime
 
 from .models import Liste, Abfrage
-from .forms import ListeForm, VokabelForm, AbfrageForm
+from .forms import ListeForm, VokabelForm, AbfrageForm, EingabeForm
 
 # Create your views here.
 
@@ -81,3 +81,39 @@ def neue_abfrage(request,liste_id):
     )
     neue_abfrage.vokabeln.set(vokabeln)
     return HttpResponseRedirect(reverse('vokabel_trainer:abfrage',args=[neue_abfrage.id]))
+
+def aktive_abfrage(request,abfrage_id,abfrage_nummer):
+    """Führt eine Abfrage durch"""
+    abfrage=Abfrage.objects.get(id=abfrage_id)
+    abfrage_nummer=int(abfrage_nummer)
+    naechste_abfrage_nummer=abfrage_nummer+1
+    vokabeln=list(abfrage.vokabeln.all())
+    liste=abfrage.liste
+    korrekt=False
+
+    if naechste_abfrage_nummer<=len(vokabeln):
+        vokabel = vokabeln[abfrage_nummer]
+        if request.method=='POST':
+            form=EingabeForm(request.POST)
+
+            if form.is_valid():
+                vokabel=vokabeln[abfrage_nummer-1]
+                eingabe=form['eingabe'].value()
+                if vokabel.franzoesisch==eingabe:
+                    korrekt=True
+                else:
+                    korrekt=False
+                vokabel=vokabeln[abfrage_nummer]
+
+            form = EingabeForm()
+            context = {'abfrage': abfrage, 'abfrage_nummer': naechste_abfrage_nummer, 'form':form, 'vokabel':vokabel,'korrekt':korrekt}
+            return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
+        else:
+            form=EingabeForm()
+            context = {'abfrage': abfrage, 'abfrage_nummer': naechste_abfrage_nummer, 'form': form, 'vokabel':vokabel,'korrekt':korrekt}
+            return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
+    elif naechste_abfrage_nummer==len(vokabeln)+1:
+        context = {'abfrage': abfrage, 'liste': liste}
+        return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
+    else:
+        return HttpResponseRedirect(reverse('vokabel_trainer:abfrage', args=[abfrage.id]))

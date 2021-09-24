@@ -20,3 +20,5 @@ class AbfrageForm(forms.ModelForm):
         fields=[]
         labels={}
 
+class EingabeForm(forms.Form):
+    eingabe=forms.CharField(label='eingabe', max_length=200)

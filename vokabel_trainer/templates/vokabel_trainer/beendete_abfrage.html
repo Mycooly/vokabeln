@@ -1,0 +1,6 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+    <p>Sie haben die Abfrage erfolgreich beendet</p>
+    <p><a href="{% url 'vokabel_trainer:abfrage' abfrage.id %}">Zurück zur Abfrage</a></p>
+    <p><a href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a> </p>
+{% endblock content %}
