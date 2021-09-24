@@ -1,0 +1,9 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+<p>Neue Liste:</p>
+<form action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button name="submit">hinzufügen</button>
+</form>
+{% endblock content %}

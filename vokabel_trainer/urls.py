@@ -9,6 +9,10 @@ urlpatterns=[
 
     url(r'^listen/$', views.listen, name='listen'),
     url(r'listen/(?P<liste_id>\d+)/$', views.liste, name='liste'),
+    url(r'^neue_liste/$', views.neue_liste, name='neue_liste'),
+    url(r'^neue_vokabel/(?P<liste_id>\d+)/$', views.neue_vokabel, name='neue_vokabel'),
 
-    url(r'^abfragen/(?P<liste_id>\d+)/$', views.abfragen, name='abfragen'),
+    url(r'^abfrage/(?P<abfrage_id>\d+)/', views.abfrage, name='abfrage'),
+
+
 ]

@@ -27,3 +27,16 @@ class Vokabel(models.Model):
 	def __str__(self):
 		"""Return Vokabelpaar"""
 		return self.deutsch + ' - ' + self.franzoesisch
+
+class Abfrage(models.Model):
+	"""Abfrage einer Vokabelliste"""
+	liste=models.ForeignKey(Liste, on_delete=models.PROTECT)
+	vokabeln=models.ManyToManyField(Vokabel)
+	date_added = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		verbose_name_plural='Abfragen'
+
+	def __str__(self):
+		"""Return Abfrage"""
+		return 'Abfrage vom '+self.date_added.isoformat()
