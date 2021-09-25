@@ -5,22 +5,17 @@
 
     <p>Vokabelabfrage Nr. {{abfrage_one_up}}</p>
 
-{% if erste_abfrage or korrekt %}
+{% if korrekt %}
     <p>{{vokabel.deutsch}}</p>
-
-    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer%}" method='post'>
-        {% csrf_token %}
-        {{ form }}
-        <button name="submit">Nächste</button>
-    </form>
 {% else %}
+    Korrigiere deine Eingabe!
     <p>{{vokabel}}</p>
+{% endif %}
 
-    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer%}" method='post'>
+    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch %}" method='post'>
         {% csrf_token %}
         {{ form }}
         <button name="submit">Nächste</button>
     </form>
-{% endif %}
 
 {% endblock content %}
