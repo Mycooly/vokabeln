@@ -1,20 +1,26 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% block content %}
     <p>Aktive Abfrage</p>
-{% if korrekt %}
-    <p>Ihre letzte Antwort war korrekt</p>
+
+    <p>Vokabelabfrage Nr. {{abfrage_one_up}}</p>
+
+{% if erste_abfrage or korrekt %}
+    <p>{{vokabel.deutsch}}</p>
+
+    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer%}" method='post'>
+        {% csrf_token %}
+        {{ form }}
+        <button name="submit">Nächste</button>
+    </form>
 {% else %}
-    <p>Ihre letzte Antwort war falsch</p>
-{% endif %}
-
-    <p>Vokabelabfrage Nr. {{abfrage_nummer}}</p>
-
     <p>{{vokabel}}</p>
 
     <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer%}" method='post'>
-    {% csrf_token %}
-    {{ form }}
-    <button name="submit">Nächste</button>
+        {% csrf_token %}
+        {{ form }}
+        <button name="submit">Nächste</button>
     </form>
+{% endif %}
 
 {% endblock content %}

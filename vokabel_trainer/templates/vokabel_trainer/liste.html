@@ -1,35 +1,28 @@
 {% extends "vokabel_trainer/base.html" %}
 {% block content %}
 
-    <p><b>{{liste}}</b></p>
+<p><b>{{liste}}</b></p>
 
-    <p>Abfragen</p>
 
-    {% if vokabeln %}
+{% if vokabeln %}
     <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <button name="submit">Neue Abfrage</button>
+        {% csrf_token %}
+        {{form.as_p}}
+        <button name="submit">Neue Abfrage</button>
     </form>
-    {% else %}
+{% else %}
     <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
-    {% endif %}
+{% endif %}
 
-    <ul>
-        {% for abfrage in abfragen %}
-            <li><a href="{% url 'vokabel_trainer:abfrage' abfrage.id %}">{{abfrage}}</a></li>
-        {% empty %}
-            <li>Noch keine Abfragen</li>
-        {% endfor %}
-    </ul>
+<a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
 
-    <a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
-
-    <ul>
-        {% for vokabel in vokabeln %}
-            <li>{{vokabel}}</li>
-        {% empty %}
-            <li>Noch keine Vokabeln</li>
-        {% endfor %}
-    </ul>
+<ul>
+    {% for vokabel in vokabeln %}
+        <li>
+            {{vokabel}} {{vokabel.percentage}}% {{vokabel.korrekt}}/{{vokabel.abfragen}}
+        </li>
+    {% empty %}
+        <li>Noch keine Vokabeln</li>
+    {% endfor %}
+</ul>
 {% endblock content %}

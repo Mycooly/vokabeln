@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
-from random import sample
+from numpy.random import choice
+from numpy import sum
+from math import cos
 from datetime import datetime
 
 from .models import Liste, Abfrage
@@ -71,49 +73,74 @@ def abfrage(request,abfrage_id):
 
 def neue_abfrage(request,liste_id):
     """Erstellt neue Abfrage"""
-    liste=Liste.objects.get(id=liste_id)
-    vokabeln=list(liste.vokabel_set.all())
-    vokabeln=sample(vokabeln, min(5, len(vokabeln)))
+    if request.method != 'POST':
+        raise Http404
+    else:
+        liste=Liste.objects.get(id=liste_id)
+        vokabeln=list(liste.vokabel_set.all())
+        weights=[cos(vokabel.percentage) for vokabel in vokabeln]
+        weights=weights/sum(weights)
+        form=AbfrageForm(data=request.POST)
+        vokabelzahl=int(form['vokabelzahl'].value())
+        vokabeln=choice(vokabeln, size=min(vokabelzahl, len(vokabeln)), replace=False, p=weights)
 
-    neue_abfrage=Abfrage.objects.create(
-        liste=liste,
-        date_added=datetime.now()
-    )
-    neue_abfrage.vokabeln.set(vokabeln)
-    return HttpResponseRedirect(reverse('vokabel_trainer:abfrage',args=[neue_abfrage.id]))
+        neue_abfrage=Abfrage.objects.create(
+            liste=liste,
+            date_added=datetime.now()
+        )
+        neue_abfrage.vokabeln.set(vokabeln)
+        return HttpResponseRedirect(reverse('vokabel_trainer:abfrage',args=[neue_abfrage.id]))
 
 def aktive_abfrage(request,abfrage_id,abfrage_nummer):
     """Führt eine Abfrage durch"""
     abfrage=Abfrage.objects.get(id=abfrage_id)
     abfrage_nummer=int(abfrage_nummer)
-    naechste_abfrage_nummer=abfrage_nummer+1
     vokabeln=list(abfrage.vokabeln.all())
     liste=abfrage.liste
     korrekt=False
 
-    if naechste_abfrage_nummer<=len(vokabeln):
+    if abfrage_nummer<len(vokabeln):
         vokabel = vokabeln[abfrage_nummer]
+        #POST
         if request.method=='POST':
             form=EingabeForm(request.POST)
-
+            vokabel.abfragen+=1
+            vokabel.percentage=vokabel.korrekt/vokabel.abfragen
+            vokabel.save()
             if form.is_valid():
-                vokabel=vokabeln[abfrage_nummer-1]
                 eingabe=form['eingabe'].value()
                 if vokabel.franzoesisch==eingabe:
+                    #Weiter zur nächsten Vokabel
                     korrekt=True
+                    vokabel.korrekt+=1
+                    vokabel.percentage = vokabel.korrekt / vokabel.abfragen
+                    vokabel.save()
+                    abfrage_nummer+=1
+                    if abfrage_nummer<len(vokabeln):
+                        #Neue Vokabel
+                        vokabel = vokabeln[abfrage_nummer]
+                        form=EingabeForm()
+                    else:
+                        #Ende der Abfrage
+                        context = {'abfrage': abfrage, 'liste': liste}
+                        Abfrage.objects.get(id=abfrage.id).delete()
+                        return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
                 else:
                     korrekt=False
-                vokabel=vokabeln[abfrage_nummer]
-
-            form = EingabeForm()
-            context = {'abfrage': abfrage, 'abfrage_nummer': naechste_abfrage_nummer, 'form':form, 'vokabel':vokabel,'korrekt':korrekt}
+            abfrage_one_up=abfrage_nummer+1
+            context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up':abfrage_one_up,'form':form, 'vokabel':vokabel,
+                       'korrekt':korrekt, 'erste_abfrage':False}
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
+        #GET
         else:
+            if abfrage_nummer==0:
+                erste_abfrage=True
+            else:
+                erste_abfrage=False
             form=EingabeForm()
-            context = {'abfrage': abfrage, 'abfrage_nummer': naechste_abfrage_nummer, 'form': form, 'vokabel':vokabel,'korrekt':korrekt}
+            abfrage_one_up = abfrage_nummer + 1
+            context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up':abfrage_one_up, 'form': form, 'vokabel':vokabel,
+                       'korrekt':korrekt,'erste_abfrage':erste_abfrage}
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
-    elif naechste_abfrage_nummer==len(vokabeln)+1:
-        context = {'abfrage': abfrage, 'liste': liste}
-        return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
     else:
-        return HttpResponseRedirect(reverse('vokabel_trainer:abfrage', args=[abfrage.id]))
+        raise Http404

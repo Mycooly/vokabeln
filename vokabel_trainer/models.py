@@ -20,6 +20,9 @@ class Vokabel(models.Model):
 	deutsch = models.CharField(max_length=100)
 	franzoesisch = models.CharField(max_length=100)
 	date_added = models.DateTimeField(auto_now_add=True)
+	abfragen = models.IntegerField(default=0)
+	korrekt = models.IntegerField(default=0)
+	percentage = models.DecimalField(max_digits=4,decimal_places=2,default=0)
 
 	class Meta:
 		verbose_name_plural = 'Vokabeln'

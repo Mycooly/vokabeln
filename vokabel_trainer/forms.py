@@ -14,11 +14,15 @@ class VokabelForm(forms.ModelForm):
         fields=['deutsch','franzoesisch']
         labels={'deutsch':'','franzoesisch':''}
 
-class AbfrageForm(forms.ModelForm):
-    class Meta:
-        model=Abfrage
-        fields=[]
-        labels={}
+class AbfrageForm(forms.Form):
+    vokabelzahl=forms.ChoiceField(
+        choices = (
+            (5,5),
+            (10,10),
+            (20,20),
+        )
+    )
 
 class EingabeForm(forms.Form):
     eingabe=forms.CharField(label='eingabe', max_length=200)
+
