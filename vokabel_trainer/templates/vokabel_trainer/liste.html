@@ -2,7 +2,8 @@
 {% block content %}
 
 <p><b>{{liste}}</b></p>
-
+<p>Erfolgsquote: {{percentage}}</p>
+<p>durchschnittliche Wiederholungen: {{versuche}}</p>
 
 {% if vokabeln %}
     <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>

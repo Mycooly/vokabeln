@@ -26,8 +26,12 @@ def liste(request, liste_id):
     form=AbfrageForm()
     liste=Liste.objects.get(id=liste_id)
     vokabeln=liste.vokabel_set.order_by('percentage')
-    abfragen=liste.abfrage_set.all()
-    context={'liste':liste, 'vokabeln':vokabeln, 'abfragen':abfragen,'form':form}
+    vokabelzahl=len(vokabeln)
+    statistik=[[vokabel.percentage,vokabel.korrekt,vokabel.abfragen] for vokabel in vokabeln]
+    percentage,_,versuche=sum(statistik,axis=0)
+    versuche=round(versuche/vokabelzahl,2)
+    percentage=round(percentage/vokabelzahl,2)
+    context={'liste':liste, 'vokabeln':vokabeln, 'form':form,'percentage':percentage,'versuche':versuche}
     return render(request, 'vokabel_trainer/liste.html', context)
 
 def neue_liste(request):
@@ -91,12 +95,13 @@ def neue_abfrage(request,liste_id):
         neue_abfrage.vokabeln.set(vokabeln)
         return HttpResponseRedirect(reverse('vokabel_trainer:abfrage',args=[neue_abfrage.id]))
 
-def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch):
+def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_versuche):
     """Führt eine Abfrage durch"""
     abfrage=Abfrage.objects.get(id=abfrage_id)
     abfrage_nummer=int(abfrage_nummer)
     vokabeln=list(abfrage.vokabeln.all())
     liste=abfrage.liste
+    anzahl_versuche=int(anzahl_versuche)+1
 
     if abfrage_nummer<len(vokabeln):
         vokabel = vokabeln[abfrage_nummer]
@@ -130,7 +135,8 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch):
                         form=EingabeForm()
                     else:
                         #Ende der Abfrage
-                        context = {'abfrage': abfrage, 'liste': liste}
+                        erfolgsquote=round(100*len(vokabeln)/anzahl_versuche,2)
+                        context = {'liste': liste,'vokabelzahl':len(vokabeln),'anzahl_versuche':anzahl_versuche,'erfolgsquote':erfolgsquote}
                         Abfrage.objects.get(id=abfrage.id).delete()
                         return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
                 else:
@@ -138,7 +144,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch):
                     korrekt=False
             abfrage_one_up=abfrage_nummer+1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up':abfrage_one_up,'form':form, 'vokabel':vokabel,
-                       'korrekt':korrekt, 'erster_versuch':erster_versuch}
+                       'korrekt':korrekt, 'erster_versuch':erster_versuch, 'anzahl_versuche':anzahl_versuche}
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
         #GET
         else:
@@ -147,7 +153,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch):
             form=EingabeForm()
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up':abfrage_one_up, 'form': form, 'vokabel':vokabel,
-                       'korrekt':korrekt, 'erster_versuch':erster_versuch}
+                       'korrekt':korrekt, 'erster_versuch':erster_versuch,'anzahl_versuche':anzahl_versuche}
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
     else:
         raise Http404

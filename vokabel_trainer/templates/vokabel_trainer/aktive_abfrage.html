@@ -4,6 +4,7 @@
     <p>Aktive Abfrage</p>
 
     <p>Vokabelabfrage Nr. {{abfrage_one_up}}</p>
+    <p>Versuch Nr. {{anzahl_versuche}}</p>
 
 {% if korrekt %}
     <p>{{vokabel.deutsch}}</p>
@@ -12,7 +13,7 @@
     <p>{{vokabel}}</p>
 {% endif %}
 
-    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch %}" method='post'>
+    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche %}" method='post'>
         {% csrf_token %}
         {{ form }}
         <button name="submit">Nächste</button>
