@@ -22,7 +22,14 @@ class AbfrageForm(forms.Form):
             (20,20),
         )
     )
+    wiederholungen=forms.ChoiceField(
+        choices=(
+            (1,1),
+            (2,2),
+            (3,3),
+        )
+    )
 
 class EingabeForm(forms.Form):
-    eingabe=forms.CharField(label='eingabe', max_length=200)
+    eingabe=forms.CharField(label='Französisch', max_length=200)
 

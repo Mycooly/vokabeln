@@ -1,9 +1,10 @@
 {% extends "vokabel_trainer/base.html" %}
+{% load filter_extras %}
 {% block content %}
 
 <p><b>{{liste}}</b></p>
-<p>Erfolgsquote: {{percentage}}</p>
-<p>durchschnittliche Wiederholungen: {{versuche}}</p>
+<p>Erfolgsquote: {{percentage}}%</p>
+<p>&#8709; Wiederholungen: {{versuche}}</p>
 
 {% if vokabeln %}
     <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
@@ -20,7 +21,7 @@
 <ul>
     {% for vokabel in vokabeln %}
         <li>
-            {{vokabel}} {{vokabel.percentage}}% {{vokabel.korrekt}}/{{vokabel.abfragen}}
+            {{vokabel}} {{vokabel.percentage|percentage}} {{vokabel.korrekt}}/{{vokabel.abfragen}}
         </li>
     {% empty %}
         <li>Noch keine Vokabeln</li>

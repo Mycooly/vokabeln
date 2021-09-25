@@ -1,13 +1,12 @@
 {% extends "vokabel_trainer/base.html" %}
 
 {% block content %}
-    <p>Aktive Abfrage</p>
+    <p><b>Aktive Abfrage</b></p>
 
-    <p>Vokabelabfrage Nr. {{abfrage_one_up}}</p>
-    <p>Versuch Nr. {{anzahl_versuche}}</p>
+    <p>Abfrage {{abfrage_one_up}} | Versuch {{anzahl_versuche}}</p>
 
 {% if korrekt %}
-    <p>{{vokabel.deutsch}}</p>
+    <p>Deutsch: {{vokabel.deutsch}}</p>
 {% else %}
     Korrigiere deine Eingabe!
     <p>{{vokabel}}</p>
@@ -15,6 +14,7 @@
 
     <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche %}" method='post'>
         {% csrf_token %}
+
         {{ form }}
         <button name="submit">Nächste</button>
     </form>

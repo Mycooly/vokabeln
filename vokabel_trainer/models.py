@@ -36,6 +36,7 @@ class Abfrage(models.Model):
 	liste=models.ForeignKey(Liste, on_delete=models.PROTECT)
 	vokabeln=models.ManyToManyField(Vokabel)
 	date_added = models.DateTimeField(auto_now_add=True)
+	reihenfolge = models.CharField(max_length=10000, default='')
 
 	class Meta:
 		verbose_name_plural='Abfragen'
