@@ -1,0 +1,17 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+
+<p><b>{{liste}}</b> - {{anzahl_vokabeln}} Vokabeln</p>
+
+<a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
+
+<ul>
+    {% for vokabel in vokabeln %}
+        <li>
+            {{vokabel}} <a href="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel.id %}">bearbeiten</a>
+        </li>
+    {% empty %}
+        <li>Noch keine Vokabeln</li>
+    {% endfor %}
+</ul>
+{% endblock content %}

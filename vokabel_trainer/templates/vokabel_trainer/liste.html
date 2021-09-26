@@ -2,7 +2,7 @@
 {% load filter_extras %}
 {% block content %}
 
-<p><b>{{liste}}</b></p>
+<p><b>{{liste}}</b> - {{anzahl_vokabeln}} Vokabeln <small><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">bearbeiten</a> </small></p>
 <p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
 <p>&#8709; Wiederholungen: {{versuche}}</p>
 

@@ -1,0 +1,10 @@
+{% extends "vokabel_trainer/base.html" %}
+{% block content %}
+<p>Änderungen</p>
+<form action="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel_id%}" method='post'>
+    {% csrf_token %}
+    {{form.as_p}}
+    <button name="submit">Änderungen übernehmen</button>
+</form>
+<a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">Abbrechen</a>
+{% endblock content %}

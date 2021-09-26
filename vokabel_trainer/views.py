@@ -1,17 +1,20 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
 from django.urls import reverse
+from django.db.models.functions import Lower
 from numpy.random import choice
 from numpy.random import shuffle
 from numpy import sum
 from math import cos
 from datetime import datetime
 from re import findall
+import re
 
-from .models import Liste, Abfrage
+from .models import Liste, Abfrage, Vokabel
 from .forms import ListeForm, VokabelForm, AbfrageForm, EingabeForm
 
 # Create your views here.
+regex=re.compile(r'^((?=")"(?P<deutsch1>[^"]+)"|(?P<deutsch2>[^,]+)),((?=")"(?P<franz1>[^"]+)"|(?P<franz2>[^,]+))')
 
 def index(request):
     """Index page"""
@@ -27,7 +30,7 @@ def liste(request, liste_id):
     """Vokabelliste"""
     form=AbfrageForm()
     liste=Liste.objects.get(id=liste_id)
-    vokabeln=liste.vokabel_set.order_by('percentage')
+    vokabeln=liste.vokabel_set.order_by(Lower('deutsch'))
     if vokabeln:
         vokabelzahl=len(vokabeln)
         statistik=[[vokabel.percentage,vokabel.korrekt,vokabel.abfragen] for vokabel in vokabeln]
@@ -37,14 +40,9 @@ def liste(request, liste_id):
     else:
         erfolgsquote=0
         versuche=0
-    context={'liste':liste, 'vokabeln':vokabeln, 'form':form,'erfolgsquote':erfolgsquote,'versuche':versuche}
+    context={'liste':liste, 'vokabeln':vokabeln, 'anzahl_vokabeln':len(vokabeln),
+             'form':form,'erfolgsquote':erfolgsquote,'versuche':versuche}
     return render(request, 'vokabel_trainer/liste.html', context)
-
-
-def handle_uploaded_file(f):
-    with open(f.name,'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
 
 def neue_liste(request):
     """Erstellt neue Vokabelliste"""
@@ -56,16 +54,58 @@ def neue_liste(request):
             liste.beschreibung=form['beschreibung'].value()
             if form['file']:
                 liste.file=form['file'].value()
-            liste.save()
+                liste.save()
+
+                #File reading
+                liste.file.open('r')
+                line=liste.file.readline()
+                while line:
+                    daten=regex.match(line).groupdict()
+                    if daten['deutsch1'] and daten['franz1']:
+                        neue_vokabel = Vokabel.objects.create(
+                            liste=liste,
+                            deutsch=daten['deutsch1'].strip(),
+                            franzoesisch=daten['franz1'].strip(),
+                        )
+                    elif daten['deutsch1'] and daten['franz2']:
+                        neue_vokabel = Vokabel.objects.create(
+                            liste=liste,
+                            deutsch=daten['deutsch1'].strip(),
+                            franzoesisch=daten['franz2'].strip(),
+                        )
+                    elif daten['deutsch2'] and daten['franz1']:
+                        neue_vokabel = Vokabel.objects.create(
+                            liste=liste,
+                            deutsch=daten['deutsch2'].strip(),
+                            franzoesisch=daten['franz1'].strip(),
+                        )
+                    else:
+                        neue_vokabel = Vokabel.objects.create(
+                            liste=liste,
+                            deutsch=daten['deutsch2'].strip(),
+                            franzoesisch=daten['franz2'].strip(),
+                        )
+                    line=liste.file.readline()
+
+                liste.file.delete()
+
             return HttpResponseRedirect(reverse('vokabel_trainer:liste',args=[liste.id]))
 
     context ={'form':form}
     return render(request, 'vokabel_trainer/neue_liste.html', context)
 
+def liste_bearbeiten(request,liste_id):
+    """Bearbeitet Liste"""
+    liste=Liste.objects.get(id=liste_id)
+    vokabeln=liste.vokabel_set.order_by(Lower('deutsch'))
+
+    context={'liste':liste, 'vokabeln':vokabeln, 'anzahl_vokabeln':len(vokabeln)}
+    return render(request, 'vokabel_trainer/liste_bearbeiten.html', context)
+
 def neue_vokabel(request,liste_id):
     """Erstellt neue Vokabel"""
     liste=Liste.objects.get(id=liste_id)
-    vokabeln=liste.vokabel_set.order_by('deutsch')
+    vokabeln=liste.vokabel_set.order_by(Lower('deutsch'))
 
     if request.method != 'POST':
         form=VokabelForm()
@@ -81,11 +121,27 @@ def neue_vokabel(request,liste_id):
 
     return render(request, 'vokabel_trainer/neue_vokabel.html', context)
 
+def vokabel_bearbeiten(request, vokabel_id):
+    """Bearbeitet Vokabel"""
+    vokabel=Vokabel.objects.get(id=vokabel_id)
+    liste=vokabel.liste
+    if request.method == 'POST':
+        form=VokabelForm(data=request.POST)
+        if form.is_valid:
+            vokabel.deutsch=form['deutsch'].value().strip()
+            vokabel.franzoesisch=form['franzoesisch'].value().strip()
+            vokabel.save()
+            return HttpResponseRedirect(reverse('vokabel_trainer:liste_bearbeiten',args=[liste.id]))
+    else:
+        form=VokabelForm(instance=vokabel)
+        context={'vokabel':vokabel, 'vokabel_id':vokabel.id, 'form':form, 'liste':liste}
+        return render(request, 'vokabel_trainer/vokabel_bearbeiten.html', context)
+
 def abfrage(request,abfrage_id):
     """Zeigt Abfrage"""
     abfrage=Abfrage.objects.get(id=abfrage_id)
     liste=abfrage.liste
-    vokabeln=abfrage.vokabeln.all()
+    vokabeln=abfrage.vokabeln.order_by(Lower('deutsch'))
 
     context={'abfrage':abfrage,'liste':liste,'vokabeln':vokabeln}
     return render(request,'vokabel_trainer/abfrage.html', context)

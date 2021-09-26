@@ -29,5 +29,6 @@ class AbfrageForm(forms.Form):
     )
 
 class EingabeForm(forms.Form):
-    eingabe=forms.CharField(label='Französisch', max_length=200)
+    eingabe=forms.CharField(label='', max_length=1000, widget=forms.Textarea(attrs={'cols':80,'rows':4}))
+
 
