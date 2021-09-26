@@ -1,10 +1,13 @@
 {% extends "vokabel_trainer/base.html" %}
+{% load filter_extras %}
 {% block content %}
     <p>{{abfrage}} von <a href="{% url 'vokabel_trainer:liste' liste.id %}">{{liste}}</a></p>
 
     <ul>
         {% for vokabel in vokabeln %}
-            <li>{{vokabel}}</li>
+            <li>
+                {{vokabel}} | {{vokabel.percentage|percentage}}
+            </li>
         {% empty %}
             <li>Noch keine Vokabeln</li>
         {% endfor %}

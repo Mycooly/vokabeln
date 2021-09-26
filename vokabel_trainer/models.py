@@ -6,7 +6,9 @@ class Liste(models.Model):
 	"""Eine Vokabelliste fuer die Abfrage"""
 	beschreibung = models.CharField(max_length=500)
 	date_added = models.DateTimeField(auto_now_add=True)
-	
+	file = models.FileField(default=None, blank=True, null=True)
+	file.required=False
+
 	class Meta:
 		verbose_name_plural = 'Listen'
 
@@ -36,7 +38,7 @@ class Abfrage(models.Model):
 	liste=models.ForeignKey(Liste, on_delete=models.PROTECT)
 	vokabeln=models.ManyToManyField(Vokabel)
 	date_added = models.DateTimeField(auto_now_add=True)
-	reihenfolge = models.CharField(max_length=10000, default='')
+	reihenfolge = models.CharField(max_length=10000)
 
 	class Meta:
 		verbose_name_plural='Abfragen'

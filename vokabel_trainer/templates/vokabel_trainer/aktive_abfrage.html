@@ -1,7 +1,7 @@
 {% extends "vokabel_trainer/base.html" %}
 
 {% block content %}
-    <p><b>Aktive Abfrage</b></p>
+    <p><b>Aktive Abfrage</b> <small><a href="{% url 'vokabel_trainer:abfrage_abbrechen' abfrage.id %}">abbrechen</a></small></p>
 
     <p>Abfrage {{abfrage_one_up}} | Versuch {{anzahl_versuche}}</p>
 
@@ -14,9 +14,15 @@
 
     <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche %}" method='post'>
         {% csrf_token %}
-
         {{ form }}
-        <button name="submit">Nächste</button>
+
+        <input class="btn btn-primary" type="submit" value="Nächste"/>
+
+        {% ifequal erster_versuch '1' %}
+        <input class="btn btn-primary" type="submit" name="korrektur" value="Korrektur"/>
+        {% endifequal %}
+
     </form>
+
 
 {% endblock content %}

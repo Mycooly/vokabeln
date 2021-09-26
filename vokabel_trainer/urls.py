@@ -15,4 +15,5 @@ urlpatterns=[
     url(r'^abfrage/(?P<abfrage_id>\d+)/', views.abfrage, name='abfrage'),
     url(r'^neue_abfrage/(?P<liste_id>\d+)/', views.neue_abfrage, name='neue_abfrage'),
     url(r'^aktive_abfrage/(?P<abfrage_id>\d+)/(?P<abfrage_nummer>\d+)/(?P<erster_versuch>[01])/(?P<anzahl_versuche>\d+)/', views.aktive_abfrage, name='aktive_abfrage'),
+    url(r'^abfrage_abbrechen/(?P<abfrage_id>\d+)/', views.abfrage_abbrechen, name='abfrage_abbrechen'),
 ]

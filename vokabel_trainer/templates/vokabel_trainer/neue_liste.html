@@ -1,9 +1,9 @@
 {% extends "vokabel_trainer/base.html" %}
 {% block content %}
 <p>Neue Liste:</p>
-<form action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
+<form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
     {% csrf_token %}
     {{form.as_p}}
-    <button name="submit">hinzufügen</button>
+    <input type="submit" name="Hinzufügen"/>
 </form>
 {% endblock content %}

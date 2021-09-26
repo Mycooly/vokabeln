@@ -2,11 +2,9 @@ from django import forms
 
 from.models import Liste, Vokabel, Abfrage
 
-class ListeForm(forms.ModelForm):
-    class Meta:
-        model=Liste
-        fields=['beschreibung']
-        labels={'beschreibung':''}
+class ListeForm(forms.Form):
+    beschreibung = forms.CharField(max_length=500)
+    file=forms.FileField(required=False)
 
 class VokabelForm(forms.ModelForm):
     class Meta:

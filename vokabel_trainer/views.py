@@ -28,23 +28,36 @@ def liste(request, liste_id):
     form=AbfrageForm()
     liste=Liste.objects.get(id=liste_id)
     vokabeln=liste.vokabel_set.order_by('percentage')
-    vokabelzahl=len(vokabeln)
-    statistik=[[vokabel.percentage,vokabel.korrekt,vokabel.abfragen] for vokabel in vokabeln]
-    percentage,_,versuche=sum(statistik,axis=0)
-    versuche=round(versuche/vokabelzahl,2)
-    percentage=round(100*percentage/vokabelzahl,2)
-    context={'liste':liste, 'vokabeln':vokabeln, 'form':form,'percentage':percentage,'versuche':versuche}
+    if vokabeln:
+        vokabelzahl=len(vokabeln)
+        statistik=[[vokabel.percentage,vokabel.korrekt,vokabel.abfragen] for vokabel in vokabeln]
+        erfolgsquote,_,versuche=sum(statistik,axis=0)
+        versuche=round(versuche/vokabelzahl,2)
+        erfolgsquote=erfolgsquote/vokabelzahl
+    else:
+        erfolgsquote=0
+        versuche=0
+    context={'liste':liste, 'vokabeln':vokabeln, 'form':form,'erfolgsquote':erfolgsquote,'versuche':versuche}
     return render(request, 'vokabel_trainer/liste.html', context)
+
+
+def handle_uploaded_file(f):
+    with open(f.name,'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 def neue_liste(request):
     """Erstellt neue Vokabelliste"""
-    if request.method != 'POST':
-        form=ListeForm()
-    else:
-        form=ListeForm(data=request.POST)
+    form=ListeForm()
+    if request.method =='POST':
+        form=ListeForm(request.POST, request.FILES or None)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('vokabel_trainer:listen'))
+            liste=Liste.objects.create()
+            liste.beschreibung=form['beschreibung'].value()
+            if form['file']:
+                liste.file=form['file'].value()
+            liste.save()
+            return HttpResponseRedirect(reverse('vokabel_trainer:liste',args=[liste.id]))
 
     context ={'form':form}
     return render(request, 'vokabel_trainer/neue_liste.html', context)
@@ -128,6 +141,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                 if vokabel.franzoesisch==eingabe:
                     #Weiter zur nächsten Vokabel
                     korrekt=True
+
                     #Zähle nur als korrekten Versuch, wenn direkt korrekt
                     if erster_versuch=='0':
                         vokabel.korrekt+=1
@@ -135,7 +149,11 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                         vokabel.save()
                     #Sonst zähle aber auch Korrekturversuch nicht
                     else:
+                        #Cheaten
+                        if 'korrektur' in request.POST:
+                            vokabel.korrekt += 1
                         vokabel.abfragen-=1
+                        vokabel.percentage = vokabel.korrekt / vokabel.abfragen
                         vokabel.save()
 
                     erster_versuch='0'
@@ -150,7 +168,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                     else:
                         #Ende der Abfrage
                         anzahl_versuche-=1
-                        erfolgsquote=round(100*len(reihenfolge)/anzahl_versuche,2)
+                        erfolgsquote=len(reihenfolge)/anzahl_versuche
                         context = {'liste': liste,'vokabelzahl':len(vokabeln),'anzahl_versuche':anzahl_versuche,'erfolgsquote':erfolgsquote}
                         Abfrage.objects.get(id=abfrage.id).delete()
                         return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
@@ -175,3 +193,8 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
     else:
         raise Http404
+
+def abfrage_abbrechen(request, abfrage_id):
+    liste=Abfrage.objects.get(id=abfrage_id).liste
+    Abfrage.objects.get(id=abfrage_id).delete()
+    return HttpResponseRedirect(reverse('vokabel_trainer:liste',args=[liste.id]))
