@@ -1,17 +1,34 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% block content %}
-
-<p><b>{{liste}}</b> - {{anzahl_vokabeln}} Vokabeln</p>
-
-<a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
-
-<ul>
-    {% for vokabel in vokabeln %}
-        <li>
-            {{vokabel}} <a href="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel.id %}">bearbeiten</a>
-        </li>
-    {% empty %}
-        <li>Noch keine Vokabeln</li>
-    {% endfor %}
-</ul>
+    <p>
+        <b>{{liste}}</b> - {{anzahl_vokabeln}} Vokabeln
+        <small><a href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a></small>
+    </p>
+    <p>
+        <a href="{% url 'vokabel_trainer:liste_loeschen' liste.id %}">Liste löschen</a>
+    </p>
+    <form action="{% url 'vokabel_trainer:liste_bearbeiten' liste.id%}" method='post'>
+        {% csrf_token %}
+        <p>Name:</p>
+        <p>{{form.name}}</p>
+        <p>Beschreibung:</p>
+        <p>{{form.beschreibung}}</p>
+        <p>File: {{form.file}}</p>
+        <button name="submit">Änderungen übernehmen</button>
+    </form>
+    <p>
+        Vokabeln
+        <small><a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a></small>
+    </p>
+    <ul>
+        {% for vokabel in vokabeln %}
+            <li>
+                {{vokabel}}
+                <small><a href="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel.id %}">bearbeiten</a></small>
+            </li>
+        {% empty %}
+            <li>Noch keine Vokabeln</li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

@@ -1,10 +1,15 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% block content %}
-<p>Änderungen</p>
-<form action="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel_id%}" method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <button name="submit">Änderungen übernehmen</button>
-</form>
-<a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">Abbrechen</a>
+    <p><b>Änderungen an der Vokabel "{{ vokabel }}"</b></p>
+    <form action="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel.id%}" method='post'>
+        {% csrf_token %}
+        <p>Deutsch:</p>
+        <p>{{ form.deutsch }}</p>
+        <p>Französisch:</p>
+        <p>{{ form.franzoesisch }}</p>
+        <button name="submit">Änderungen übernehmen</button>
+    </form>
+    <p><a href="{% url 'vokabel_trainer:vokabel_loeschen' vokabel.id %}">Löschen</a></p>
+    <p><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">Abbrechen</a></p>
 {% endblock content %}

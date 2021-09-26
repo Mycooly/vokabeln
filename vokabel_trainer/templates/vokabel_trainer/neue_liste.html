@@ -1,9 +1,15 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% block content %}
-<p>Neue Liste:</p>
-<form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="submit" name="Hinzufügen"/>
-</form>
+    <p><b>Neue Liste</b></p>
+    <form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
+        {% csrf_token %}
+        <p>Name:</p>
+        <p>{{ form.name }}</p>
+        <p>Beschreibung:</p>
+        <p>{{ form.beschreibung }}</p>
+        <p>File: {{ form.file }}</p>
+
+        <input type="submit" value="Erstellen"/>
+    </form>
 {% endblock content %}

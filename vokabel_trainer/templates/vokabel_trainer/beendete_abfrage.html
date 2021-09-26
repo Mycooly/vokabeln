@@ -1,9 +1,10 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% load filter_extras %}
+
 {% block content %}
     <p>Sie haben erfolgreich {{vokabelzahl}} Vokabeln gelernt!</p>
     <p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
     <p>Benötigte Versuche: {{anzahl_versuche}}</p>
-
-    <p><a href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a> </p>
+    <p><a href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a></p>
 {% endblock content %}

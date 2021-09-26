@@ -1,30 +1,41 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% load filter_extras %}
+
 {% block content %}
+    <p>
+        <b>{{ liste }}</b> - {{ anzahl_vokabeln }} Vokabeln
+        <small><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">bearbeiten</a></small>
+    </p>
+    <p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
+    <p>&#8709; Wiederholungen: {{versuche}}</p>
 
-<p><b>{{liste}}</b> - {{anzahl_vokabeln}} Vokabeln <small><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">bearbeiten</a> </small></p>
-<p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
-<p>&#8709; Wiederholungen: {{versuche}}</p>
+    <p>Beschreibung:</p>
+    {% ifequal liste.beschreibung ''%}
+        Noch nicht hinzugefügt.
+    {% else %}
+        {{ liste.beschreibung }}
+    {% endifequal %}
 
-{% if vokabeln %}
-    <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
-        {% csrf_token %}
-        {{form.as_p}}
-        <button name="submit">Neue Abfrage</button>
-    </form>
-{% else %}
-    <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
-{% endif %}
+    {% if vokabeln %}
+        <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button name="submit">Neue Abfrage</button>
+        </form>
+    {% else %}
+        <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
+    {% endif %}
 
-<a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
+    <a href="{% url 'vokabel_trainer:neue_vokabel' liste.id %}">Neue Vokabel</a>
 
-<ul>
-    {% for vokabel in vokabeln %}
-        <li>
-            {{vokabel}} {{vokabel.percentage|percentage}} {{vokabel.korrekt}}/{{vokabel.abfragen}}
-        </li>
-    {% empty %}
-        <li>Noch keine Vokabeln</li>
-    {% endfor %}
-</ul>
+    <ul>
+        {% for vokabel in vokabeln %}
+            <li>
+                {{ vokabel }} {{ vokabel.percentage|percentage }} {{ vokabel.korrekt }}/{{ vokabel.abfragen }}
+            </li>
+        {% empty %}
+            <li>Noch keine Vokabeln</li>
+        {% endfor %}
+    </ul>
 {% endblock content %}

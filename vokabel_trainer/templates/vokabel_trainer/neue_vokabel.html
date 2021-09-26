@@ -1,16 +1,21 @@
 {% extends "vokabel_trainer/base.html" %}
+
 {% block content %}
-<p>Neue Vokabel für die Liste {{liste}}</p>
-<form action="{% url 'vokabel_trainer:neue_vokabel' liste.id%}" method='post'>
-    {% csrf_token %}
-    {{form.as_p}}
-    <button name="submit">hinzufügen</button>
-</form>
-<ul>
-    {% for vokabel in vokabeln %}
-        <li>{{vokabel}}</li>
-    {% empty %}
-        <li>Noch keine Vokabeln</li>
-    {% endfor %}
-</ul>
+    <p>Neue Vokabel für die Liste {{liste}}</p>
+    <form action="{% url 'vokabel_trainer:neue_vokabel' liste.id%}" method='post'>
+        {% csrf_token %}
+        <p>Deutsch</p>
+        <p>{{form.deutsch}}</p>
+        <p>Französisch</p>
+        <p>{{form.franzoesisch}}</p>
+
+        <button name="submit">hinzufügen</button>
+    </form>
+    <ul>
+        {% for vokabel in vokabeln %}
+            <li>{{vokabel}}</li>
+        {% empty %}
+            <li>Noch keine Vokabeln</li>
+        {% endfor %}
+    </ul>
 {% endblock content %}
