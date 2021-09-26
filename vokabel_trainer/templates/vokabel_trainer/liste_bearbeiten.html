@@ -8,14 +8,15 @@
     <p>
         <a href="{% url 'vokabel_trainer:liste_loeschen' liste.id %}">Liste löschen</a>
     </p>
-    <form action="{% url 'vokabel_trainer:liste_bearbeiten' liste.id%}" method='post'>
+    <form enctype="multipart/form-data" action="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}" method='post'>
         {% csrf_token %}
         <p>Name:</p>
         <p>{{form.name}}</p>
         <p>Beschreibung:</p>
         <p>{{form.beschreibung}}</p>
         <p>File: {{form.file}}</p>
-        <button name="submit">Änderungen übernehmen</button>
+
+        <input type="submit" value="Änderungen übernehmen">
     </form>
     <p>
         Vokabeln

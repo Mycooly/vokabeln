@@ -84,6 +84,7 @@ def vokabeln_aus_csv_eintragen(liste, form):
                 franzoesisch=daten['franz2'].strip(),
             )
         line = liste.file.readline()
+    liste.save()
     liste.file.delete()
 
 
