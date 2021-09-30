@@ -14,12 +14,14 @@
         <p>{{vokabel}}</p>
     {% endif %}
 
-    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche %}"
+    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche tipp_nr %}"
           method='post'>
         {% csrf_token %}
         <p>{{ form.eingabe }}</p>
 
         <input class="btn btn-primary" type="submit" value="Nächste"/>
+
+        <input class="btn btn-primary" type="submit" name="tipp" value="Tipp"/>
 
         {% ifequal erster_versuch '1' %}
         <input class="btn btn-primary" type="submit" name="korrektur" value="Korrektur"/>

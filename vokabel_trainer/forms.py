@@ -37,4 +37,4 @@ class AbfrageForm(forms.Form):
 
 
 class EingabeForm(forms.Form):
-    eingabe = forms.CharField(label='', max_length=1000, widget=forms.TextInput(attrs={'size': 100, 'autofocus': True}))
+    eingabe = forms.CharField(label='', max_length=1000, required=False ,widget=forms.TextInput(attrs={'size': 100, 'autofocus': True}))

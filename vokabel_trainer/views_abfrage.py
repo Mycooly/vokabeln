@@ -35,7 +35,7 @@ def neue_abfrage(request, liste_id):
     else:
         liste = Liste.objects.get(id=liste_id)
         vokabeln = list(liste.vokabel_set.all())
-        form = AbfrageForm(data=request.POST)
+        form = AbfrageForm(request.POST)
 
         # Wähle zufällig Vokabeln gewichtet nach Erfolgsquote aus
         weights = [cos(vokabel.percentage) for vokabel in vokabeln]
@@ -60,7 +60,7 @@ def neue_abfrage(request, liste_id):
         return HttpResponseRedirect(reverse('vokabel_trainer:abfrage', args=[neue_abfrage.id]))
 
 
-def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_versuche):
+def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_versuche, tipp_nr):
     """Führt eine Abfrage durch"""
     abfrage = Abfrage.objects.get(id=abfrage_id)
     abfrage_nummer = int(abfrage_nummer)
@@ -86,6 +86,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
 
                 # Korrekte Eingabe
                 if vokabel.franzoesisch == eingabe:
+                    tipp_nr = 0
                     korrekt = True
                     # Zähle Versuch nur, wenn direkt korrekt
                     if erster_versuch == '0':
@@ -124,13 +125,25 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
 
                 # Falsche Eingabe
                 else:
-                    erster_versuch = '1'
-                    korrekt = False
+                    # Zeigt nächsten korrekten Buchstaben und zählt Eingabe nicht
+                    if 'tipp' in request.POST:
+                        tipp_nr=int(tipp_nr)
+                        tipp_nr+=1
+                        vokabel.abfragen-=1
+                        vokabel.save()
+                        anzahl_versuche-=1
+                        erster_versuch='0'
+                        korrekt=True
+                        tipp=vokabel.franzoesisch[:tipp_nr]
+                        form=EingabeForm({'eingabe':tipp})
+                    else:
+                        erster_versuch = '1'
+                        korrekt = False
 
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
                        'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche}
+                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr':tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 
@@ -143,7 +156,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
                        'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche}
+                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr':tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 
