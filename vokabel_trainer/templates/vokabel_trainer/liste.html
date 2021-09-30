@@ -1,28 +1,56 @@
 {% extends "vokabel_trainer/base.html" %}
-
 {% load filter_extras %}
 
-{% block content %}
-    <p>
-        <b>{{ liste }}</b> - {{ anzahl_vokabeln }} Vokabeln
-        <small><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">bearbeiten</a></small>
-    </p>
-    <p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
-    <p>&#8709; Wiederholungen: {{versuche}}</p>
+{% block header %}
+    <h1 style="margin-top:20px">{{ liste }} - {{ anzahl_vokabeln }} Vokabeln
+        <small style=""><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}" class="btn btn-primary btn-sm">bearbeiten</a></small></h1>
+{% endblock header %}
 
-    <p>Beschreibung:</p>
+{% block content %}
+<table class="table table-borderless" style="margin-top: 20px">
+    <tbody>
+    <tr>
+        <th style="width: 20%">Erfolgsquote:</th>
+        <td>{{erfolgsquote|percentage}}</td>
+    </tr>
+    <tr>
+        <th>&#8709; Wiederholungen:</th>
+        <td>{{versuche}}</td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
     {% ifequal liste.beschreibung ''%}
         Noch nicht hinzugefügt.
     {% else %}
         {{ liste.beschreibung }}
     {% endifequal %}
+    </div>
+
 
     {% if vokabeln %}
-        <form action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button name="submit">Neue Abfrage</button>
-        </form>
+    <div class="pt-4 pb-4">
+<form class="border border-3 border-dark bg-light" style="width: 250px" style="border-width:10px" action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>
+    <div class="pt-3 pb-3">
+        <h3 style="margin-left:5px">Neue Abfrage</h3>
+<table class="table table-borderless">
+    <tbody>
+    <tr>
+        <th style="width: 30%">Vokabelzahl:</th>
+        <td>{{form.vokabelzahl}}</td>
+    </tr>
+    <tr>
+        <th>Wiederholungen:</th>
+        <td>{{form.wiederholungen}}</td>
+    </tr>
+    </tbody>
+</table>
+    <button style="margin-left:5px" class="btn btn-primary" name="submit">Erstellen</button>
+  </div>
+</form>
+            <div class="pt-4 pb-4">
+
     {% else %}
         <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
     {% endif %}
