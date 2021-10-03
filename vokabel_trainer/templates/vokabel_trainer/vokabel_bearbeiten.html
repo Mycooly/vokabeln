@@ -1,15 +1,22 @@
 {% extends "vokabel_trainer/base.html" %}
 
+{% block header %}
+    <h1 style="margin-top:20px">Änderungen an "{{ vokabel }}"
+        <small style=""><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}" class="btn btn-outline-danger btn-sm">abbrechen</a></small></h1>
+{% endblock header %}
+
 {% block content %}
-    <p><b>Änderungen an der Vokabel "{{ vokabel }}"</b></p>
+    <div class="pt-4 pb-4">
     <form action="{% url 'vokabel_trainer:vokabel_bearbeiten' vokabel.id%}" method='post'>
         {% csrf_token %}
-        <p>Deutsch:</p>
+        <p><b>Deutsch:</b></p>
         <p>{{ form.deutsch }}</p>
-        <p>Französisch:</p>
+        <p><b>Französisch:</b></p>
         <p>{{ form.franzoesisch }}</p>
-        <button name="submit">Änderungen übernehmen</button>
+        <button style="margin-left:5px" class="btn btn-primary" name="submit">Speichern</button>
     </form>
-    <p><a href="{% url 'vokabel_trainer:vokabel_loeschen' vokabel.id %}">Löschen</a></p>
-    <p><a href="{% url 'vokabel_trainer:liste_bearbeiten' liste.id %}">Abbrechen</a></p>
+        </div>
+
+    <a style="margin-left:5px" class="btn btn-danger" href="{% url 'vokabel_trainer:vokabel_loeschen' vokabel.id %}">Löschen</a>
+
 {% endblock content %}

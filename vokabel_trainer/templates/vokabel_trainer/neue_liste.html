@@ -1,15 +1,22 @@
 {% extends "vokabel_trainer/base.html" %}
 
+{% block header %}
+    <h1 style="margin-top:20px">Neue Liste
+        <small style=""><a href="{% url 'vokabel_trainer:listen' %}" class="btn btn-outline-danger btn-sm">abbrechen</a></small>
+    </h1>
+{% endblock header %}
+
 {% block content %}
-    <p><b>Neue Liste</b></p>
+<div class="pt-4 pb-4">
     <form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
         {% csrf_token %}
-        <p>Name:</p>
+        <p><b>Name:</b></p>
         <p>{{ form.name }}</p>
-        <p>Beschreibung:</p>
+        <p><b>Beschreibung:</b></p>
         <p>{{ form.beschreibung }}</p>
         <p>File: {{ form.file }}</p>
 
-        <input type="submit" value="Erstellen"/>
+        <input class="btn btn-success" type="submit" value="Erstellen"/>
     </form>
+</div>
 {% endblock content %}
