@@ -4,9 +4,9 @@ from .models import Vokabel
 
 
 class ListeForm(forms.Form):
-    name = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'cols': 80, 'rows': 1, 'autofocus': True}))
+    name = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'cols': 80, 'rows': 1, 'autofocus': True, 'autocomplete': 'off'}))
     beschreibung = forms.CharField(max_length=2000, required=False,
-                                   widget=forms.Textarea(attrs={'cols': 80, 'rows': 4}))
+                                   widget=forms.Textarea(attrs={'cols': 80, 'rows': 4, 'autocomplete': 'off'}))
     file = forms.FileField(required=False)
 
 
@@ -16,7 +16,7 @@ class VokabelForm(forms.ModelForm):
         fields = ['deutsch', 'franzoesisch']
         labels = {'deutsch': '', 'franzoesisch': ''}
         widgets = {'deutsch': forms.Textarea(attrs={'cols': 80, 'rows': 4, 'autofocus': True}),
-                   'franzoesisch': forms.Textarea(attrs={'cols': 80, 'rows': 4})}
+                   'franzoesisch': forms.Textarea(attrs={'cols': 80, 'rows': 4, 'autocomplete': 'off'})}
 
 
 class AbfrageForm(forms.Form):
@@ -37,4 +37,4 @@ class AbfrageForm(forms.Form):
 
 
 class EingabeForm(forms.Form):
-    eingabe = forms.CharField(label='', max_length=1000, required=False ,widget=forms.TextInput(attrs={'size': 100, 'autofocus': True}))
+    eingabe = forms.CharField(label='', max_length=1000, required=False ,widget=forms.TextInput(attrs={'size': 100, 'autofocus': True, 'autocomplete': 'off'}))
