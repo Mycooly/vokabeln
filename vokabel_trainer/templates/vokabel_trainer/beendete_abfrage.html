@@ -2,9 +2,23 @@
 
 {% load filter_extras %}
 
+{% block header %}
+    Sie haben erfolgreich {{vokabelzahl}} Vokabeln gelernt!
+{% endblock header %}
+
 {% block content %}
-    <p>Sie haben erfolgreich {{vokabelzahl}} Vokabeln gelernt!</p>
-    <p>Erfolgsquote: {{erfolgsquote|percentage}}</p>
-    <p>Benötigte Versuche: {{anzahl_versuche}}</p>
-    <p><a href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a></p>
+    <table class="table table-borderless" style="margin-top: 20px; width: 800 px; font-size: 20px">
+        <tbody>
+            <tr>
+                <th style="width: 25%">Erfolgsquote:</th>
+                <td class="text-end" style="width: 25%">{{erfolgsquote|percentage}}</td>
+                <th style="width: 25%">Versuche:</th>
+                <td class="text-end" style="width: 25%">{{anzahl_versuche}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pt-2 d-flex justify-content-center">
+        <a class="btn btn-primary btn-lg" href="{% url 'vokabel_trainer:liste' liste.id %}">Zurück zur Liste</a>
+    </div>
 {% endblock content %}

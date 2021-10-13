@@ -7,16 +7,16 @@
 {% endblock header %}
 
 {% block content %}
-<div class="pt-4 pb-4">
-    <form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
-        {% csrf_token %}
-        <p><b>Name:</b></p>
-        <p>{{ form.name }}</p>
-        <p><b>Beschreibung:</b></p>
-        <p>{{ form.beschreibung }}</p>
-        <p>File: {{ form.file }}</p>
+    <div class="pt-4 pb-4">
+        <form enctype="multipart/form-data" action="{% url 'vokabel_trainer:neue_liste' %}" method='post'>
+            {% csrf_token %}
+            <p><b>Name:</b></p>
+            <p>{{ form.name }}</p>
+            <p><b>Beschreibung:</b></p>
+            <p>{{ form.beschreibung }}</p>
+            <p>File: {{ form.file }}</p>
 
-        <input class="btn btn-success" type="submit" value="Erstellen"/>
-    </form>
-</div>
+            <input class="btn btn-success" type="submit" value="Erstellen"/>
+        </form>
+    </div>
 {% endblock content %}

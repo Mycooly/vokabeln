@@ -1,22 +1,22 @@
 {% extends "vokabel_trainer/base.html" %}
 
 {% block header%}
-    <h1 style="margin-top:20px">Listen</h1>
+    Listen
 {% endblock header %}
 
 {% block content %}
-<div style="margin-top: 20px">
-<ul>
-        {% for liste in listen %}
-            <li>
-                <a href="{% url 'vokabel_trainer:liste' liste.id%}" style="font-size:24px">{{liste}}</a>
-                <p>{{ liste.beschreibung }}</p>
-            </li>
-        {% empty %}
-            <li>Noch keine Listen</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div style="margin-top: 20px">
+        <ul>
+            {% for liste in listen %}
+                <li>
+                    <a href="{% url 'vokabel_trainer:liste' liste.id%}" style="font-size:24px">{{liste}}</a>
+                    <p>{{ liste.beschreibung }}</p>
+                </li>
+            {% empty %}
+                <li>Noch keine Listen</li>
+            {% endfor %}
+        </ul>
+    </div>
 
     <a href="{% url 'vokabel_trainer:neue_liste'%}" class="btn btn-success" style="margin-top:10px"><b>+</b> Neue Liste</a>
 {% endblock content %}

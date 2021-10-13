@@ -34,10 +34,18 @@
 
         <div class="container">
             <div class="page-header">
-                {% block header %}{% endblock header %}
+                <div class="d-flex justify-content-center">
+                    <h1 style="margin-top:20px">
+                        {% block header %}{% endblock header %}
+                    </h1>
+                </div>
             </div>
             <div>
-                {% block content %}{% endblock content %}
+                <div class="pt-3 d-flex justify-content-center">
+                    <div style="width: 800px">
+                        {% block content %}{% endblock content %}
+                    </div>
+                </div>
             </div>
         </div>
     </body>

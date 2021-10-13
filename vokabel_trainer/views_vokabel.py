@@ -22,7 +22,7 @@ def neue_vokabel(request, liste_id):
             neue_vokabel = form.save(commit=False)
             neue_vokabel.liste = liste
             neue_vokabel.save()
-            return HttpResponseRedirect(reverse('vokabel_trainer:liste', args=[liste_id]))
+            return HttpResponseRedirect(reverse('vokabel_trainer:neue_vokabel', args=[liste_id]))
 
     context = {'liste': liste, 'form': form, 'vokabeln': vokabeln}
     return render(request, 'vokabel_trainer/neue_vokabel.html', context)

@@ -1,30 +1,52 @@
 {% extends "vokabel_trainer/base.html" %}
 
+{% block header %}
+    Aktive Abfrage
+    <small style="">
+        <a href="{% url 'vokabel_trainer:abfrage_abbrechen' abfrage.id %}" class="btn btn-outline-danger btn-sm">abbrechen</a>
+    </small>
+{% endblock header %}
+
 {% block content %}
-    <p>
-        <b>Aktive Abfrage</b>
-        <small><a href="{% url 'vokabel_trainer:abfrage_abbrechen' abfrage.id %}">abbrechen</a></small>
-    </p>
-    <p>Abfrage {{abfrage_one_up}} - Versuch {{anzahl_versuche}}</p>
+<div class="d-flex flex-row justify-content-center align-items-center" style="height: 50vh">
+<div class="pt-3 pb-3 border border-3 border-dark bg-light">
+    <div class="d-flex justify-content-center">
+        <h5>
+        Abfrage {{abfrage_one_up}} - Versuch {{anzahl_versuche}}
+            </h5>
+    </div>
 
     {% if korrekt %}
-        <p>{{vokabel.deutsch}}</p>
+    <div class="pt-4 pb-2 d-flex justify-content-center">
+        <h5>
+        {{vokabel.deutsch}}
+            </h5>
+    </div>
     {% else %}
-        Korrigiere deine Eingabe!
-        <p>{{vokabel}}</p>
+    <div class="pt-4 pb-2 d-flex justify-content-center">
+        <h5 class="text-danger">
+        {{vokabel.deutsch}} - {{vokabel.franzoesisch}}
+        </h5>
+    </div>
     {% endif %}
 
-    <form action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche tipp_nr %}"
+    <form class="pt-2" action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche tipp_nr %}"
           method='post'>
         {% csrf_token %}
         <p>{{ form.eingabe }}</p>
 
-        <input class="btn btn-primary" type="submit" value="Nächste"/>
-
-        <input class="btn btn-primary" type="submit" name="tipp" value="Tipp"/>
-
-        {% ifequal erster_versuch '1' %}
-        <input class="btn btn-primary" type="submit" name="korrektur" value="Korrektur"/>
+    <div class="d-flex justify-content-center">
+        <div class="btn-toolbar">
+        <input class="btn btn-success mx-2" type="submit" value="Nächste"/>
+        {% ifequal erster_versuch '0' %}
+            <input class="btn btn-primary mx-2" type="submit" name="tipp" value="Tipp"/>
         {% endifequal %}
+        {% ifequal erster_versuch '1' %}
+            <input class="btn btn-primary mx-2" type="submit" name="korrektur" value="Korrektur"/>
+        {% endifequal %}
+        </div>
+    </div>
     </form>
+</div>
+</div>
 {% endblock content %}

@@ -8,7 +8,7 @@ from . import views_vokabel, views_liste, views_abfrage
 
 # Definition der URLs
 
-ids = r'(?P<abfrage_id>\d+)/(?P<abfrage_nummer>\d+)/(?P<erster_versuch>[01])/(?P<anzahl_versuche>\d+)/(?P<tipp_nr>\d+)/$'
+re = r'(?P<abfrage_id>\d+)/(?P<abfrage_nummer>\d+)/(?P<erster_versuch>[01])/(?P<anzahl_versuche>\d+)/(?P<tipp_nr>\d+)/$'
 
 urlpatterns = [
     # Index
@@ -29,6 +29,6 @@ urlpatterns = [
     # Abfragen
     url(r'^abfrage/(?P<abfrage_id>\d+)/$', views_abfrage.abfrage, name='abfrage'),
     url(r'^neue_abfrage/(?P<liste_id>\d+)/$', views_abfrage.neue_abfrage, name='neue_abfrage'),
-    url(r'^aktive_abfrage/' + ids, views_abfrage.aktive_abfrage, name='aktive_abfrage'),
+    url(r'^aktive_abfrage/' + re, views_abfrage.aktive_abfrage, name='aktive_abfrage'),
     url(r'^abfrage_abbrechen/(?P<abfrage_id>\d+)/$', views_abfrage.abfrage_abbrechen, name='abfrage_abbrechen'),
 ]

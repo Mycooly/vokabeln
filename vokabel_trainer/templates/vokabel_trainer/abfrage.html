@@ -2,17 +2,41 @@
 
 {% load filter_extras %}
 
+{% block header %}
+    Abfrage von {{ liste }}
+    <small style="">
+        <a href="{% url 'vokabel_trainer:abfrage_abbrechen' abfrage.id %}" class="btn btn-outline-danger btn-sm">abbrechen</a>
+    </small>
+{% endblock header %}
+
 {% block content %}
-    <p><b>Abfrage von <a href="{% url 'vokabel_trainer:liste' liste.id %}">"{{ liste }}"</a></b></p>
-    <ul>
-        {% for vokabel in vokabeln %}
-            <li>
-                {{ vokabel }}
-            </li>
-        {% empty %}
-            <li>Noch keine Vokabeln</li>
-        {% endfor %}
-    </ul>
-    <p>
-        <a href="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id 0 0 0 0 %}">Abfrage starten</a> </p>
+    <div class="pt-3 pb-4" style="width: 800px">
+        <table class="table table-striped table-hover table-sm">
+            <thead>
+                <tr class="table-primary table-bordered">
+                    <th scope="col" style="width: 1%">#</th>
+                    <th scope="col" style="width: 40%">Deutsch</th>
+                    <th scope="col" style="width: 40%">Französisch</th>
+                    <th scope="col" style="width: 10%">Abfragen</th>
+                    <th scope="col" style="width: 3%">Erfolgsquote</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vokabel in vokabeln %}
+                    <tr>
+                        <th scope="row" class="align-middle">{{ forloop.counter0 }}</th>
+                        <td class="align-middle">{{ vokabel.deutsch }}</td>
+                        <td class="align-middle">{{ vokabel.franzoesisch }}</td>
+                        <td class="align-middle text-end">{{ vokabel.abfragen }}</td>
+                        <td class="align-middle text-end">{{ vokabel.korrekt|percentage }}</td>
+                    </tr>
+                {% empty %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id 0 0 0 0 %}" class="btn btn-success btn-lg">Abfrage starten</a>
+    </div>
 {% endblock content %}

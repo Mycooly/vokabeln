@@ -127,15 +127,15 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                 else:
                     # Zeigt nächsten korrekten Buchstaben und zählt Eingabe nicht
                     if 'tipp' in request.POST:
-                        tipp_nr=int(tipp_nr)
-                        tipp_nr+=1
-                        vokabel.abfragen-=1
+                        tipp_nr = int(tipp_nr)
+                        tipp_nr += 1
+                        vokabel.abfragen -= 1
                         vokabel.save()
-                        anzahl_versuche-=1
-                        erster_versuch='0'
-                        korrekt=True
-                        tipp=vokabel.franzoesisch[:tipp_nr]
-                        form=EingabeForm({'eingabe':tipp})
+                        anzahl_versuche -= 1
+                        erster_versuch = '0'
+                        korrekt = True
+                        tipp = vokabel.franzoesisch[:tipp_nr]
+                        form = EingabeForm({'eingabe': tipp})
                     else:
                         erster_versuch = '1'
                         korrekt = False
@@ -143,7 +143,8 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
                        'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr':tipp_nr}
+                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche,
+                       'tipp_nr': tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 
@@ -156,7 +157,8 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
                        'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr':tipp_nr}
+                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche,
+                       'tipp_nr': tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 
