@@ -44,6 +44,7 @@ class Abfrage(models.Model):
     vokabeln = models.ManyToManyField(Vokabel)
     date_added = models.DateTimeField(auto_now_add=True)
     reihenfolge = models.CharField(max_length=10000)
+    anzahl_abfragen = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Abfragen'

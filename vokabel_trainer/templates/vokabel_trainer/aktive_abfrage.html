@@ -9,11 +9,18 @@
 
 {% block content %}
 <div class="d-flex flex-row justify-content-center align-items-center" style="height: 50vh">
-<div class="pt-3 pb-3 border border-3 border-dark bg-light">
-    <div class="d-flex justify-content-center">
-        <h5>
-        Abfrage {{abfrage_one_up}} - Versuch {{anzahl_versuche}}
-            </h5>
+<div class="pb-3 border border-3 border-dark bg-light">
+    <div class="pb-0 d-flex justify-content-center">
+        <table class="table table-borderless text-white bg-secondary bg-gradient" style="width: 800 px">
+                <tbody>
+                    <tr>
+                        <td style="width: 25%">Abfrage</td>
+                        <td class="text-end" style="width: 25%">{{abfrage_one_up}} / {{anzahl_abfragen}}</td>
+                        <td style="width: 25%">Versuch</td>
+                        <td class="text-end" style="width: 25%">{{anzahl_versuche}}</td>
+                    </tr>
+                </tbody>
+            </table>
     </div>
 
     {% if korrekt %}
@@ -30,7 +37,7 @@
     </div>
     {% endif %}
 
-    <form class="pt-2" action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche tipp_nr %}"
+    <form class="pt-2 mx-4" action="{% url 'vokabel_trainer:aktive_abfrage' abfrage.id abfrage_nummer erster_versuch anzahl_versuche tipp_nr %}"
           method='post'>
         {% csrf_token %}
         <p>{{ form.eingabe }}</p>

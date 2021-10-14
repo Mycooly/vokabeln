@@ -54,6 +54,7 @@ def neue_abfrage(request, liste_id):
             liste=liste,
             date_added=datetime.now(),
             reihenfolge=reihenfolge,
+            anzahl_abfragen=wiederholungen*vokabelzahl,
         )
         neue_abfrage.vokabeln.set(vokabeln)
 
@@ -142,9 +143,9 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
 
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
-                       'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche,
-                       'tipp_nr': tipp_nr}
+                       'anzahl_abfragen': abfrage.anzahl_abfragen, 'form': form, 'vokabel': vokabel,
+                       'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge, 'korrekt': korrekt,
+                       'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr': tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 
@@ -156,9 +157,9 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
             vokabel_index = int(reihenfolge[0])
             abfrage_one_up = abfrage_nummer + 1
             context = {'abfrage': abfrage, 'abfrage_nummer': abfrage_nummer, 'abfrage_one_up': abfrage_one_up,
-                       'form': form, 'vokabel': vokabel, 'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge,
-                       'korrekt': korrekt, 'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche,
-                       'tipp_nr': tipp_nr}
+                       'anzahl_abfragen': abfrage.anzahl_abfragen, 'form': form, 'vokabel': vokabel,
+                       'vokabel_index': vokabel_index, 'reihenfolge': reihenfolge, 'korrekt': korrekt,
+                       'erster_versuch': erster_versuch, 'anzahl_versuche': anzahl_versuche, 'tipp_nr': tipp_nr}
 
             return render(request, 'vokabel_trainer/aktive_abfrage.html', context)
 

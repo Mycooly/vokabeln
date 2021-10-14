@@ -31,8 +31,6 @@
 
 
         {% if vokabeln %}
-
-
         <div class="d-flex justify-content-center">
             <div class="pt-4 pb-4">
                 <form class="border border-3 border-dark bg-light" style="width: 250px; border-width:10px" action="{% url 'vokabel_trainer:neue_abfrage' liste.id%}" method='post'>{% csrf_token %}
@@ -60,7 +58,8 @@
             </div>
         </div>
         {% else %}
-            <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
+        <p></p>
+        <p>Fügen Sie Vokabeln hinzu, um Abfragen erstellen zu können</p>
         {% endif %}
 
         <div class="pt-4 pb-2">
