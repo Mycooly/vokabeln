@@ -28,7 +28,7 @@
                         <td class="align-middle">{{ vokabel.deutsch }}</td>
                         <td class="align-middle">{{ vokabel.franzoesisch }}</td>
                         <td class="align-middle text-end">{{ vokabel.abfragen }}</td>
-                        <td class="align-middle text-end">{{ vokabel.korrekt|percentage }}</td>
+                        <td class="align-middle text-end">{{ vokabel.percentage|percentage }}</td>
                     </tr>
                 {% empty %}
                 {% endfor %}
