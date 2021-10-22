@@ -28,6 +28,7 @@ class Vokabel(models.Model):
     # Statistik
     abfragen = models.IntegerField(default=0)
     korrekt = models.IntegerField(default=0)
+    stufe = models.IntegerField(default=0)
     percentage = models.DecimalField(max_digits=4, decimal_places=2, default=0)
 
     class Meta:
@@ -45,6 +46,7 @@ class Abfrage(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     reihenfolge = models.CharField(max_length=10000)
     anzahl_abfragen = models.IntegerField(default=0)
+    wiederholungen = models.IntegerField(default=0)
 
     class Meta:
         verbose_name_plural = 'Abfragen'

@@ -21,6 +21,9 @@ urlpatterns = [
     url(r'^liste_bearbeiten/(?P<liste_id>\d+)/$', views_liste.liste_bearbeiten, name='liste_bearbeiten'),
     url(r'^liste_loeschen/(?P<liste_id>\d+)/$', views_liste.liste_loeschen, name='liste_loeschen'),
 
+    # Grafik
+    url(r'^population-chart/(?P<abfrage_id>\d+)/$', views_abfrage.population_chart, name='population-chart'),
+
     # Vokabeln
     url(r'^neue_vokabel/(?P<liste_id>\d+)/$', views_vokabel.neue_vokabel, name='neue_vokabel'),
     url(r'^vokabel_bearbeiten/(?P<vokabel_id>\d+)/$', views_vokabel.vokabel_bearbeiten, name='vokabel_bearbeiten'),

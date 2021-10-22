@@ -36,8 +36,8 @@ class AbfrageForm(forms.Form):
     vokabelzahl = forms.ChoiceField(
         choices=(
             (10, 10),
+            (20, 20),
             (30, 30),
-            (50, 50),
         ), initial=30
     )
     wiederholungen = forms.ChoiceField(

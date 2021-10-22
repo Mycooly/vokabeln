@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.urls import reverse
 from django.db.models.functions import Lower
 
@@ -55,6 +55,7 @@ def neue_abfrage(request, liste_id):
             date_added=datetime.now(),
             reihenfolge=reihenfolge,
             anzahl_abfragen=wiederholungen*vokabelzahl,
+            wiederholungen=wiederholungen,
         )
         neue_abfrage.vokabeln.set(vokabeln)
 
@@ -92,6 +93,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                     # Zähle Versuch nur, wenn direkt korrekt
                     if erster_versuch == '0':
                         vokabel.korrekt += 1
+                        vokabel.stufe += 1
                         vokabel.percentage = vokabel.korrekt / vokabel.abfragen
                         vokabel.save()
                     # Sonst zähle Korrekturversuch nicht
@@ -99,6 +101,7 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                         # Cheaten bei Vertippen
                         if 'korrektur' in request.POST:
                             vokabel.korrekt += 1
+                            vokabel.stufe += 1
                             anzahl_versuche -= 1
                         # Zähle Korrekturversuch nicht
                         vokabel.abfragen -= 1
@@ -120,6 +123,9 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
                         erfolgsquote = len(reihenfolge) / anzahl_versuche
                         context = {'liste': liste, 'vokabelzahl': len(vokabeln), 'anzahl_versuche': anzahl_versuche,
                                    'erfolgsquote': erfolgsquote}
+                        for vokabel in vokabeln:
+                            vokabel.stufe=0
+                            vokabel.save()
                         Abfrage.objects.get(id=abfrage.id).delete()
 
                         return render(request, 'vokabel_trainer/beendete_abfrage.html', context)
@@ -170,7 +176,32 @@ def aktive_abfrage(request, abfrage_id, abfrage_nummer, erster_versuch, anzahl_v
 
 def abfrage_abbrechen(request, abfrage_id):
     """Bricht die aktive Abfrage ab"""
-    liste = Abfrage.objects.get(id=abfrage_id).liste
+    abfrage = Abfrage.objects.get(id=abfrage_id)
+    liste = abfrage.liste
+    vokabeln = list(abfrage.vokabeln.all())
+    for vokabel in vokabeln:
+        vokabel.stufe=0
+        vokabel.save()
+
     Abfrage.objects.get(id=abfrage_id).delete()
 
     return HttpResponseRedirect(reverse('vokabel_trainer:liste', args=[liste.id]))
+
+
+def population_chart(request, abfrage_id):
+    """Malt die aktuellen Stats der Abfrage"""
+    abfrage = Abfrage.objects.get(id=abfrage_id)
+    vokabeln = list(abfrage.vokabeln.all())
+    stufen=[0 for i in range(abfrage.wiederholungen+1)]
+
+    for vokabel in vokabeln:
+        stufen[vokabel.stufe]+=1
+
+    labels = ['0x Korrekt','1x Korrekt','2x Korrekt','3x Korrekt']
+    labels = labels[:len(stufen)]
+    data = stufen
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
